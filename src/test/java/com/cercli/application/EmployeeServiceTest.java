@@ -8,6 +8,7 @@ import com.cercli.shared.util.DateTimeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
 import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -58,5 +59,69 @@ public class EmployeeServiceTest {
 
         assertEquals(String.format(
                 "Invalid email for employee: %s", employee.email()), thrown.getMessage());
+    }
+
+    @Test
+    public void testUpdateEmployee() {
+        Employee employee = new Employee(
+                UUID.randomUUID(),
+                "Yauri Attamimi",
+                "AI Engineer",
+                "yauritux@gmail.com",
+                7500,
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone(),
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone()
+        );
+
+        employeeService.addEmployee(employee);
+
+        Employee updatedEmployee = new Employee(
+                employee.id(),
+                "Yauri Attamimi",
+                "Software Architect",
+                "yauritux@gmail.com",
+                9000,
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone(),
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone()
+        );
+
+        employeeService.updateEmployee(updatedEmployee);
+
+        Employee retrievedEmployee = employeeService.getEmployee(employee.id());
+        assertNotNull(retrievedEmployee);
+        assertEquals(updatedEmployee.position(), retrievedEmployee.position());
+        assertEquals(updatedEmployee.salary(), retrievedEmployee.salary());
+    }
+
+    @Test
+    public void testGetAllEmployees() {
+        Employee emp1 = new Employee(
+                UUID.randomUUID(),
+                "Yauri Attamimi",
+                "AI Engineer",
+                "yauritux@gmail.com",
+                9000,
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone(),
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone()
+        );
+
+        Employee emp2 = new Employee(
+                UUID.randomUUID(),
+                "Joe Yabuki",
+                "Software Engineer",
+                "joey@gmail.com",
+                5000,
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone(),
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone()
+        );
+
+        employeeService.addEmployee(emp1);
+        employeeService.addEmployee(emp2);
+
+        List<Employee> employees = employeeService.getAllEmployees();
+
+        assertEquals(2, employees.size());
+        assertTrue(employees.contains(emp1));
+        assertTrue(employees.contains(emp2));
     }
 }
