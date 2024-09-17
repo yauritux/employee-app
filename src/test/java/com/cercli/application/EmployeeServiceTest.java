@@ -4,25 +4,21 @@ import com.cercli.domain.Employee;
 import com.cercli.domain.EmployeeRepository;
 import com.cercli.infrastructure.InMemoryEmployeeRepository;
 import com.cercli.shared.exception.EmployeeCreationFailedException;
-import com.cercli.shared.exception.EmployeeNotFoundException;
 import com.cercli.shared.util.DateTimeUtils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class EmployeeServiceTest {
 
-    private EmployeeRepository employeeRepository;
     private EmployeeService employeeService;
 
     @BeforeEach
     public void setUp() {
-        employeeRepository = new InMemoryEmployeeRepository();
+        EmployeeRepository employeeRepository = new InMemoryEmployeeRepository();
         employeeService = new EmployeeService(employeeRepository);
     }
 
@@ -57,9 +53,8 @@ public class EmployeeServiceTest {
                 DateTimeUtils.getCurrentDateTimeInServerTimeZone()
         );
 
-        var thrown = assertThrows(EmployeeCreationFailedException.class, () -> {
-            employeeService.addEmployee(employee);
-        });
+        var thrown = assertThrows(EmployeeCreationFailedException.class,
+                () -> employeeService.addEmployee(employee));
 
         assertEquals(String.format(
                 "Invalid email for employee: %s", employee.email()), thrown.getMessage());
