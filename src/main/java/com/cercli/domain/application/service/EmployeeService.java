@@ -1,4 +1,4 @@
-package com.cercli.domain.application;
+package com.cercli.domain.application.service;
 
 import com.cercli.domain.core.Employee;
 import com.cercli.port.EmployeeRepository;

@@ -1,5 +1,6 @@
 package com.cercli.domain.application;
 
+import com.cercli.domain.application.service.TimeOffRequestService;
 import com.cercli.domain.core.Employee;
 import com.cercli.domain.core.RequestCategory;
 import com.cercli.domain.core.TimeOffRequest;

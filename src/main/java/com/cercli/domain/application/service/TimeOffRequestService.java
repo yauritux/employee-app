@@ -1,4 +1,4 @@
-package com.cercli.domain.application;
+package com.cercli.domain.application.service;
 
 import com.cercli.domain.core.RequestCategory;
 import com.cercli.domain.core.TimeOffRequest;
