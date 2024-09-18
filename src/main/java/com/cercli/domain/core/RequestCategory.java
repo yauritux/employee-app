@@ -8,4 +8,9 @@ import java.util.UUID;
  *
  * Represents a request category.
  */
-public record RequestCategory(UUID id, String name) {}
+public record RequestCategory(UUID id, String name) {
+    @Override
+    public String toString() {
+        return String.format("RequestCategory{id=%s, name='%s'}", id, name);
+    }
+}
