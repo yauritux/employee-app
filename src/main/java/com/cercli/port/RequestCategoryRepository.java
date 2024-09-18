@@ -2,6 +2,7 @@ package com.cercli.port;
 
 import com.cercli.domain.core.RequestCategory;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -28,4 +29,11 @@ public interface RequestCategoryRepository {
      * @return the request category with the specified ID, or null if not found.
      */
     RequestCategory getRequestCategoryById(UUID id);
+
+    /**
+     * List all request category records.
+     *
+     * @return list of request categories.
+     */
+    List<RequestCategory> getAllRequestCategories();
 }

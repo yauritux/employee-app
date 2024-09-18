@@ -3,9 +3,7 @@ package com.cercli.infrastructure.adapter.persistence;
 import com.cercli.domain.core.RequestCategory;
 import com.cercli.port.RequestCategoryRepository;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * @author Yauri Attamimi (yauritux@gmail.com)
@@ -19,6 +17,11 @@ import java.util.UUID;
 public class InMemoryRequestCategoryRepository implements RequestCategoryRepository {
 
     private final Map<UUID, RequestCategory> requestCategories = new HashMap<>();
+
+    public InMemoryRequestCategoryRepository() {
+        requestCategories.put(UUID.randomUUID(),
+                new RequestCategory(UUID.randomUUID(), "Work Remotely"));
+    }
 
     /**
      * Adds a new request category to the repository.
@@ -39,5 +42,15 @@ public class InMemoryRequestCategoryRepository implements RequestCategoryReposit
     @Override
     public RequestCategory getRequestCategoryById(UUID id) {
         return requestCategories.get(id);
+    }
+
+    /**
+     * Fetch all request category records.
+     *
+     * @return list of request categories.
+     */
+    @Override
+    public List<RequestCategory> getAllRequestCategories() {
+        return new ArrayList<>(requestCategories.values());
     }
 }
