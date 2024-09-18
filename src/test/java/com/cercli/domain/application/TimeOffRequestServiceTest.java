@@ -82,4 +82,29 @@ public class TimeOffRequestServiceTest {
 
         assertThrows(TimeOffRequestException.class, () -> timeOffRequestService.addTimeOffRequest(request2));
     }
+
+    @Test
+    public void testAddOverlappingTimeOffRequestWithWorkRemotely() {
+        UUID employeeId = UUID.randomUUID();
+        TimeOffRequest request1 = new TimeOffRequest(
+                UUID.randomUUID(),
+                workRemotelyCategory.id(),
+                employeeId,
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone(),
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone()
+        );
+
+        TimeOffRequest request2 = new TimeOffRequest(
+                UUID.randomUUID(),
+                annualLeaveCategory.id(),
+                employeeId,
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone(),
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone()
+        );
+
+        timeOffRequestService.addTimeOffRequest(request1);
+        timeOffRequestService.addTimeOffRequest(request2);
+
+        assertEquals(2, timeOffRequestRepository.getTimeOffRequestsByEmployeeId(employeeId).size());
+    }
 }

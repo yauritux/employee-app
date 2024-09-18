@@ -1,8 +1,8 @@
 package com.cercli.domain.application;
 
 import com.cercli.domain.core.RequestCategory;
-import com.cercli.port.RequestCategoryRepository;
 import com.cercli.domain.core.TimeOffRequest;
+import com.cercli.port.RequestCategoryRepository;
 import com.cercli.port.TimeOffRequestRepository;
 import com.cercli.shared.exception.TimeOffRequestException;
 
@@ -48,7 +48,7 @@ public class TimeOffRequestService {
                         existingRequest.requestCategoryId());
                 RequestCategory newCategory = requestCategoryRepository.getRequestCategoryById(
                         timeOffRequest.requestCategoryId());
-                if (!isWorkRemotelyCategory(existingCategory) || !isWorkRemotelyCategory(newCategory)) {
+                if (isNotWorkRemotelyCategory(existingCategory) && isNotWorkRemotelyCategory(newCategory)) {
                     throw new TimeOffRequestException("Time off request overlaps with an existing request.");
                 }
             }
@@ -75,7 +75,7 @@ public class TimeOffRequestService {
      * @param category the request category to check.
      * @return true if the category is "Work Remotely", false otherwise.
      */
-    private boolean isWorkRemotelyCategory(RequestCategory category) {
-        return "Work Remotely".equalsIgnoreCase(category.name());
+    private boolean isNotWorkRemotelyCategory(RequestCategory category) {
+        return !("Work Remotely".equalsIgnoreCase(category.name()));
     }
 }
