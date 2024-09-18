@@ -10,7 +10,7 @@ import java.util.*;
  * @author Yauri Attamimi (yauritux@gmail.com)
  * @version 1.0
  *
- * In-Memory implementation of the EmployeeRepository interface.
+ * In-Memory implementation of the <code>EmployeeRepository</code> interface.
  * This represents what so-called as an `adapter` within the context of
  * our <strong>Hexagonal Architecture</strong>, that implement the
  * <code>EmployeeRepository</code> port interface.
