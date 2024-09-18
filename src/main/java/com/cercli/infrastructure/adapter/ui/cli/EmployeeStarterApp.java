@@ -42,7 +42,7 @@ public class EmployeeStarterApp {
         commandRegistry.registerCommand("get-employee", new GetEmployeeCommand(employeeService, in));
         commandRegistry.registerCommand("add-request-category", new AddRequestCategoryCommand(requestCategoryRepository, in));
         commandRegistry.registerCommand("list-request-categories", new ListRequestCategoryCommand(requestCategoryRepository));
-        commandRegistry.registerCommand("add-timeoff-request", new AddTimeOffRequestCommand(timeOffRequestService, in));
+        commandRegistry.registerCommand("add-time-off-request", new AddTimeOffRequestCommand(timeOffRequestService, in));
         commandRegistry.registerCommand("help", new HelpCommand());
 
         while (true) {

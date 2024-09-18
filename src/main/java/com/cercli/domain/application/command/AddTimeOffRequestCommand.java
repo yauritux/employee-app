@@ -5,9 +5,6 @@ import com.cercli.domain.core.TimeOffRequest;
 import com.cercli.shared.exception.TimeOffRequestException;
 import com.cercli.shared.util.DateTimeUtils;
 
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -27,18 +24,18 @@ public class AddTimeOffRequestCommand implements Command {
 
     @Override
     public void execute(String[] args) {
-        var requestCategoryId = getRequestCategoryId(in);
+        var requestCategoryId = getRequestCategoryId();
         while (requestCategoryId == null) {
-            requestCategoryId = getRequestCategoryId(in);
+            requestCategoryId = getRequestCategoryId();
         }
-        var selectedEmployeeId = getEmployeeId(in);
+        var selectedEmployeeId = getEmployeeId();
         while (selectedEmployeeId == null) {
-            selectedEmployeeId = getEmployeeId(in);
+            selectedEmployeeId = getEmployeeId();
         }
         System.out.print("Enter the time-off start date (yyyy-mm-dd HH:mm, e.g.: 2024-09-18 07:00): ");
-        var startDate = getZonedDateTime(in.nextLine());
+        var startDate = DateTimeUtils.getZonedDateTime(in.nextLine());
         System.out.print("Enter the time-off end date (yyyy-mm-dd HH:mm, e.g.: 2024-09-25 07:00): ");
-        var endDate = getZonedDateTime(in.nextLine());
+        var endDate = DateTimeUtils.getZonedDateTime(in.nextLine());
         try {
             timeOffRequestService.addTimeOffRequest(new TimeOffRequest(
                     UUID.randomUUID(), requestCategoryId, selectedEmployeeId, startDate, endDate
@@ -48,7 +45,7 @@ public class AddTimeOffRequestCommand implements Command {
         }
     }
 
-    private static UUID getRequestCategoryId(Scanner in) {
+    private UUID getRequestCategoryId() {
         System.out.print("Enter the request category ID: ");
         try {
             return UUID.fromString(in.nextLine());
@@ -58,7 +55,7 @@ public class AddTimeOffRequestCommand implements Command {
         return null;
     }
 
-    private static UUID getEmployeeId(Scanner in) {
+    private UUID getEmployeeId() {
         System.out.print("Enter the employee ID: ");
         try {
             return UUID.fromString(in.nextLine());
@@ -66,10 +63,5 @@ public class AddTimeOffRequestCommand implements Command {
             System.err.println("Invalid employee ID!");
         }
         return null;
-    }
-
-    private static ZonedDateTime getZonedDateTime(String enteredDate) {
-        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm");
-        return LocalDateTime.parse(enteredDate, dtf).atZone(DateTimeUtils.SERVER_TIME_ZONE);
     }
 }
