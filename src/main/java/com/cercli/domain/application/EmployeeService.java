@@ -1,7 +1,7 @@
-package com.cercli.application;
+package com.cercli.domain.application;
 
-import com.cercli.domain.Employee;
-import com.cercli.domain.EmployeeRepository;
+import com.cercli.domain.core.Employee;
+import com.cercli.port.EmployeeRepository;
 import com.cercli.shared.exception.EmployeeCreationFailedException;
 import com.cercli.shared.util.EmailValidator;
 

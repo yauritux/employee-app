@@ -1,7 +1,7 @@
-package com.cercli.infrastructure;
+package com.cercli.infrastructure.adapter.persistence;
 
-import com.cercli.domain.RequestCategory;
-import com.cercli.domain.RequestCategoryRepository;
+import com.cercli.domain.core.RequestCategory;
+import com.cercli.port.RequestCategoryRepository;
 
 import java.util.HashMap;
 import java.util.Map;

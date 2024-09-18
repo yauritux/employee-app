@@ -1,7 +1,7 @@
-package com.cercli.infrastructure;
+package com.cercli.infrastructure.adapter.persistence;
 
-import com.cercli.domain.Employee;
-import com.cercli.domain.EmployeeRepository;
+import com.cercli.domain.core.Employee;
+import com.cercli.port.EmployeeRepository;
 import com.cercli.shared.exception.EmployeeNotFoundException;
 
 import java.util.*;

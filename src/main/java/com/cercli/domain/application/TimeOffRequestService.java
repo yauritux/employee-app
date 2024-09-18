@@ -1,9 +1,9 @@
-package com.cercli.application;
+package com.cercli.domain.application;
 
-import com.cercli.domain.RequestCategory;
-import com.cercli.domain.RequestCategoryRepository;
-import com.cercli.domain.TimeOffRequest;
-import com.cercli.domain.TimeOffRequestRepository;
+import com.cercli.domain.core.RequestCategory;
+import com.cercli.port.RequestCategoryRepository;
+import com.cercli.domain.core.TimeOffRequest;
+import com.cercli.port.TimeOffRequestRepository;
 import com.cercli.shared.exception.TimeOffRequestException;
 
 import java.util.List;

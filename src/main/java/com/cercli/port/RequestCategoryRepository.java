@@ -1,4 +1,6 @@
-package com.cercli.domain;
+package com.cercli.port;
+
+import com.cercli.domain.core.RequestCategory;
 
 import java.util.UUID;
 

@@ -1,7 +1,7 @@
-package com.cercli.infrastructure;
+package com.cercli.infrastructure.adapter.persistence;
 
-import com.cercli.domain.TimeOffRequest;
-import com.cercli.domain.TimeOffRequestRepository;
+import com.cercli.domain.core.TimeOffRequest;
+import com.cercli.port.TimeOffRequestRepository;
 
 import java.util.HashMap;
 import java.util.List;

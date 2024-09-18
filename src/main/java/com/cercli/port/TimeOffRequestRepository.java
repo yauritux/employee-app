@@ -1,4 +1,6 @@
-package com.cercli.domain;
+package com.cercli.port;
+
+import com.cercli.domain.core.TimeOffRequest;
 
 import java.util.List;
 import java.util.UUID;

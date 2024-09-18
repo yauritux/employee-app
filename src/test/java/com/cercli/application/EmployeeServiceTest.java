@@ -1,8 +1,9 @@
 package com.cercli.application;
 
-import com.cercli.domain.Employee;
-import com.cercli.domain.EmployeeRepository;
-import com.cercli.infrastructure.InMemoryEmployeeRepository;
+import com.cercli.domain.core.Employee;
+import com.cercli.port.EmployeeRepository;
+import com.cercli.domain.application.EmployeeService;
+import com.cercli.infrastructure.adapter.persistence.InMemoryEmployeeRepository;
 import com.cercli.shared.exception.EmployeeCreationFailedException;
 import com.cercli.shared.util.DateTimeUtils;
 import org.junit.jupiter.api.BeforeEach;

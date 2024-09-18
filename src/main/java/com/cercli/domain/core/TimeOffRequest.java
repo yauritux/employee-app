@@ -1,4 +1,4 @@
-package com.cercli.domain;
+package com.cercli.domain.core;
 
 import java.time.ZonedDateTime;
 import java.util.UUID;
