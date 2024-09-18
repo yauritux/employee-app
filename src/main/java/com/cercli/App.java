@@ -42,7 +42,7 @@ public class App {
             if ("help".equalsIgnoreCase(commands[0])) {
                 System.out.println("You can use one of the following commands:");
                 showCommandOptions();
-            } else if ("add".equalsIgnoreCase(commands[0])) {
+            } else if ("add-employee".equalsIgnoreCase(commands[0])) {
                 System.out.println("Registering a new employee...");
                 System.out.print("Enter the employee name: ");
                 String name = in.nextLine();
@@ -60,7 +60,7 @@ public class App {
                         DateTimeUtils.getCurrentDateTimeInServerTimeZone(),
                         DateTimeUtils.getCurrentDateTimeInServerTimeZone()
                 ));
-            } else if ("list".equalsIgnoreCase(commands[0])) {
+            } else if ("list-employees".equalsIgnoreCase(commands[0])) {
                 System.out.println("List of employees:");
                 var records = employeeService.getAllEmployees();
                 if (records.isEmpty()) {
@@ -70,7 +70,7 @@ public class App {
                 for (Employee employee : records) {
                     System.out.println(employee);
                 }
-            } else if ("get".equalsIgnoreCase(commands[0])) {
+            } else if ("get-employee".equalsIgnoreCase(commands[0])) {
                 System.out.print("Enter the employee ID: ");
                 String id = in.nextLine();
                 try {
@@ -90,10 +90,13 @@ public class App {
 
     private static void showCommandOptions() {
         System.out.println();
-        System.out.println("add - Register a new employee");
-        System.out.println("list - List all employees");
-        System.out.println("get - Show employee details based on the selected ID");
-        System.out.println("exit - Exit the application");
+        System.out.println("Employee Data");
+        System.out.println("   add-employee: Add (register) a new employee");
+        System.out.println("   list-employees: List all employees");
+        System.out.println("   get-employee: Show employee details based on the selected ID");
+        System.out.println();
+        System.out.println("Others");
+        System.out.println("   exit: End the application");
         System.out.println();
     }
 
