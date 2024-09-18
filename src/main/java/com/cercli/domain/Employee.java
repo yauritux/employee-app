@@ -6,6 +6,8 @@ import java.util.UUID;
 /**
  * @author Yauri Attamimi (yauritux@gmail.com)
  * @version 1.0
+ *
+ * Represents an Employee record.
  */
 public record Employee(
         UUID id,
