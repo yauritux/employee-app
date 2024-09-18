@@ -13,6 +13,13 @@ import java.util.UUID;
 public interface RequestCategoryRepository {
 
     /**
+     * Adds a new request category to the repository.
+     *
+     * @param requestCategory the request category to add.
+     */
+    void addRequestCategory(RequestCategory requestCategory);
+
+    /**
      * Retrieves a request category by its ID.
      *
      * @param id the ID of the request category.
