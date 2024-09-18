@@ -1,12 +1,23 @@
 package com.cercli.infrastructure.adapter.ui.cli;
 
 import com.cercli.domain.application.EmployeeService;
+import com.cercli.domain.application.TimeOffRequestService;
 import com.cercli.domain.core.Employee;
+import com.cercli.domain.core.RequestCategory;
+import com.cercli.domain.core.TimeOffRequest;
 import com.cercli.infrastructure.adapter.persistence.InMemoryEmployeeRepository;
+import com.cercli.infrastructure.adapter.persistence.InMemoryRequestCategoryRepository;
+import com.cercli.infrastructure.adapter.persistence.InMemoryTimeOffRequestRepository;
 import com.cercli.port.EmployeeRepository;
+import com.cercli.port.RequestCategoryRepository;
+import com.cercli.port.TimeOffRequestRepository;
 import com.cercli.shared.exception.EmployeeNotFoundException;
+import com.cercli.shared.exception.TimeOffRequestException;
 import com.cercli.shared.util.DateTimeUtils;
 
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Scanner;
 import java.util.UUID;
 
@@ -28,6 +39,13 @@ public class EmployeeStarterApp {
 
         EmployeeRepository employeeRepository = new InMemoryEmployeeRepository();
         EmployeeService employeeService = new EmployeeService(employeeRepository);
+
+        TimeOffRequestRepository timeOffRequestRepository = new InMemoryTimeOffRequestRepository();
+        RequestCategoryRepository requestCategoryRepository = new InMemoryRequestCategoryRepository();
+
+        TimeOffRequestService timeOffRequestService = new TimeOffRequestService(
+                timeOffRequestRepository, requestCategoryRepository, employeeRepository
+        );
 
         while (true) {
             System.out.println("Type 'help' to see the list of commands:");
@@ -83,11 +101,44 @@ public class EmployeeStarterApp {
                 } catch (EmployeeNotFoundException e) {
                     System.err.println(e.getMessage());
                 }
+            } else if ("add-request-category".equalsIgnoreCase(commands[0])) {
+                System.out.println("Enter the request category name: ");
+                String name = in.nextLine();
+                requestCategoryRepository.addRequestCategory(new RequestCategory(UUID.randomUUID(), name));
+            } else if ("list-request-categories".equalsIgnoreCase(commands[0])) {
+                for (RequestCategory requestCategory : requestCategoryRepository.getAllRequestCategories()) {
+                    System.out.println(requestCategory);
+                }
+            } else if ("add-time-off-request".equalsIgnoreCase(commands[0])) {
+                var requestCategoryId = getRequestCategoryId(in);
+                while (requestCategoryId == null) {
+                    requestCategoryId = getRequestCategoryId(in);
+                }
+                var selectedEmployeeId = getEmployeeId(in);
+                while (selectedEmployeeId == null) {
+                    selectedEmployeeId = getEmployeeId(in);
+                }
+                System.out.print("Enter the time-off start date (yyyy-mm-dd HH:mm, e.g.: 2024-09-18 07:00): ");
+                var startDate = getZonedDateTime(in.nextLine());
+                System.out.print("Enter the time-off end date (yyyy-mm-dd HH:mm, e.g.: 2024-09-25 07:00): ");
+                var endDate = getZonedDateTime(in.nextLine());
+                try {
+                    timeOffRequestService.addTimeOffRequest(new TimeOffRequest(
+                            UUID.randomUUID(), requestCategoryId, selectedEmployeeId, startDate, endDate
+                    ));
+                } catch (TimeOffRequestException e) {
+                    System.err.println(e.getMessage());
+                }
             } else {
                 System.err.println("Unrecognized command! Please use one of the following commands:");
                 showCommandOptions();
             }
         }
+    }
+
+    private static ZonedDateTime getZonedDateTime(String enteredDate) {
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("uuuu-MM-dd HH:mm");
+        return LocalDateTime.parse(enteredDate, dtf).atZone(DateTimeUtils.SERVER_TIME_ZONE);
     }
 
     private static void showCommandOptions() {
@@ -96,6 +147,11 @@ public class EmployeeStarterApp {
         System.out.println("   add-employee: Add (register) a new employee");
         System.out.println("   list-employees: List all employees");
         System.out.println("   get-employee: Show employee details based on the selected ID");
+        System.out.println();
+        System.out.println("Time-Off Requests");
+        System.out.println("   add-request-category: Add (register) a new time-off request category");
+        System.out.println("   list-request-categories: List all time-off request categories");
+        System.out.println("   add-time-off-request: Add (register) a new time off request");
         System.out.println();
         System.out.println("Others");
         System.out.println("   exit: End the application");
@@ -111,5 +167,25 @@ public class EmployeeStarterApp {
             System.err.println("E.g. : 7500");
         }
         return 0;
+    }
+
+    private static UUID getRequestCategoryId(Scanner in) {
+        System.out.print("Enter the request category ID: ");
+        try {
+            return UUID.fromString(in.nextLine());
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid request category ID!");
+        }
+        return null;
+    }
+
+    private static UUID getEmployeeId(Scanner in) {
+        System.out.print("Enter the employee ID: ");
+        try {
+            return UUID.fromString(in.nextLine());
+        } catch (IllegalArgumentException e) {
+            System.err.println("Invalid employee ID!");
+        }
+        return null;
     }
 }

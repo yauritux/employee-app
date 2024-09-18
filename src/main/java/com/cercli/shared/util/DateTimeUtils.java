@@ -11,7 +11,7 @@ import java.time.ZonedDateTime;
  */
 public class DateTimeUtils {
 
-    private static final ZoneId SERVER_TIME_ZONE = ZoneId.of("Asia/Dubai");
+    public static final ZoneId SERVER_TIME_ZONE = ZoneId.of("Asia/Dubai");
 
     /**
      * Gets the current date and time in the server's time zone.
