@@ -1,9 +1,12 @@
 package com.cercli.domain.application;
 
+import com.cercli.domain.core.Employee;
 import com.cercli.domain.core.RequestCategory;
 import com.cercli.domain.core.TimeOffRequest;
+import com.cercli.infrastructure.adapter.persistence.InMemoryEmployeeRepository;
 import com.cercli.infrastructure.adapter.persistence.InMemoryRequestCategoryRepository;
 import com.cercli.infrastructure.adapter.persistence.InMemoryTimeOffRequestRepository;
+import com.cercli.port.EmployeeRepository;
 import com.cercli.port.RequestCategoryRepository;
 import com.cercli.port.TimeOffRequestRepository;
 import com.cercli.shared.exception.TimeOffRequestException;
@@ -22,7 +25,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class TimeOffRequestServiceTest {
 
     private TimeOffRequestRepository timeOffRequestRepository;
-    private RequestCategoryRepository requestCategoryRepository;
+    private EmployeeRepository employeeRepository;
     private TimeOffRequestService timeOffRequestService;
 
     private final RequestCategory workRemotelyCategory =
@@ -33,17 +36,27 @@ public class TimeOffRequestServiceTest {
     @BeforeEach
     public void setUp() {
         timeOffRequestRepository = new InMemoryTimeOffRequestRepository();
-        requestCategoryRepository = new InMemoryRequestCategoryRepository();
-        timeOffRequestService = new TimeOffRequestService(timeOffRequestRepository, requestCategoryRepository);
+        RequestCategoryRepository requestCategoryRepository = new InMemoryRequestCategoryRepository();
+        employeeRepository = new InMemoryEmployeeRepository();
+        timeOffRequestService = new TimeOffRequestService(
+                timeOffRequestRepository, requestCategoryRepository, employeeRepository);
 
         // Add request categories
         requestCategoryRepository.addRequestCategory(workRemotelyCategory);
         requestCategoryRepository.addRequestCategory(annualLeaveCategory);
+
+        // Add employee
+        employeeRepository.addEmployee(
+                new Employee(UUID.randomUUID(), "Yauri Attamimi", "AI Engineer",
+                        "yauritux@gmail.com", 9000,
+                        DateTimeUtils.getCurrentDateTimeInServerTimeZone(),
+                        DateTimeUtils.getCurrentDateTimeInServerTimeZone())
+        );
     }
 
     @Test
     public void testAddTimeOffRequest() {
-        UUID employeeId = UUID.randomUUID();
+        var employeeId = employeeRepository.getAllEmployees().get(0).id();
         TimeOffRequest request1 = new TimeOffRequest(
                 UUID.randomUUID(),
                 workRemotelyCategory.id(),
@@ -60,8 +73,42 @@ public class TimeOffRequestServiceTest {
     }
 
     @Test
+    public void testAddTimeOffRequestCategoryNotFound() {
+        var employeeId = employeeRepository.getAllEmployees().get(0).id();
+        var categoryId = UUID.randomUUID();
+        TimeOffRequest request = new TimeOffRequest(
+                UUID.randomUUID(),
+                categoryId,
+                employeeId,
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone(),
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone()
+        );
+
+        var thrown = assertThrows(TimeOffRequestException.class, () -> timeOffRequestService.addTimeOffRequest(request));
+        assertEquals(String.format(
+                "Failed to find request category with id %s", categoryId
+        ), thrown.getMessage());
+    }
+
+    @Test
+    public void testAddTimeOffRequestEmployeeNotFound() {
+        var employeeId = UUID.randomUUID();
+        TimeOffRequest request = new TimeOffRequest(
+                UUID.randomUUID(),
+                annualLeaveCategory.id(),
+                employeeId,
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone(),
+                DateTimeUtils.getCurrentDateTimeInServerTimeZone()
+        );
+
+        var thrown = assertThrows(TimeOffRequestException.class, () -> timeOffRequestService.addTimeOffRequest(request));
+        assertEquals(String.format(
+                "Cannot find employee with ID %s", employeeId), thrown.getMessage());
+    }
+
+    @Test
     public void testAddOverlappingTimeOffRequest() {
-        UUID employeeId = UUID.randomUUID();
+        var employeeId = employeeRepository.getAllEmployees().get(0).id();
         TimeOffRequest request1 = new TimeOffRequest(
                 UUID.randomUUID(),
                 annualLeaveCategory.id(),
@@ -85,7 +132,7 @@ public class TimeOffRequestServiceTest {
 
     @Test
     public void testAddOverlappingTimeOffRequestWithWorkRemotely() {
-        UUID employeeId = UUID.randomUUID();
+        var employeeId = employeeRepository.getAllEmployees().get(0).id();
         TimeOffRequest request1 = new TimeOffRequest(
                 UUID.randomUUID(),
                 workRemotelyCategory.id(),
