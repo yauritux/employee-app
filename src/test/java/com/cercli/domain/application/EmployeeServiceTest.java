@@ -1,9 +1,8 @@
 package com.cercli.domain.application;
 
 import com.cercli.domain.core.Employee;
-import com.cercli.port.EmployeeRepository;
-import com.cercli.domain.application.EmployeeService;
 import com.cercli.infrastructure.adapter.persistence.InMemoryEmployeeRepository;
+import com.cercli.port.EmployeeRepository;
 import com.cercli.shared.exception.EmployeeCreationFailedException;
 import com.cercli.shared.util.DateTimeUtils;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,6 +13,11 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * @author Yauri Attamimi (yauritux@gmail.com)
+ * @version 1.0
+ *
+ */
 public class EmployeeServiceTest {
 
     private EmployeeService employeeService;
