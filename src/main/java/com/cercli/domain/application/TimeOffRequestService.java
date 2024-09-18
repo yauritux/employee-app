@@ -2,8 +2,10 @@ package com.cercli.domain.application;
 
 import com.cercli.domain.core.RequestCategory;
 import com.cercli.domain.core.TimeOffRequest;
+import com.cercli.port.EmployeeRepository;
 import com.cercli.port.RequestCategoryRepository;
 import com.cercli.port.TimeOffRequestRepository;
+import com.cercli.shared.exception.EmployeeNotFoundException;
 import com.cercli.shared.exception.TimeOffRequestException;
 
 import java.util.List;
@@ -20,6 +22,7 @@ public class TimeOffRequestService {
 
     private final TimeOffRequestRepository timeOffRequestRepository;
     private final RequestCategoryRepository requestCategoryRepository;
+    private final EmployeeRepository employeeRepository;
 
     /**
      * Constructs a TimeOffRequestService with the specified repositories.
@@ -29,9 +32,11 @@ public class TimeOffRequestService {
      */
     public TimeOffRequestService(
             TimeOffRequestRepository timeoffRequestRepository,
-            RequestCategoryRepository requestCategoryRepository) {
+            RequestCategoryRepository requestCategoryRepository,
+            EmployeeRepository employeeRepository) {
         this.timeOffRequestRepository = timeoffRequestRepository;
         this.requestCategoryRepository = requestCategoryRepository;
+        this.employeeRepository = employeeRepository;
     }
 
     /**
@@ -40,6 +45,16 @@ public class TimeOffRequestService {
      * @param timeOffRequest the time-off request to add.
      */
     public void addTimeOffRequest(TimeOffRequest timeOffRequest) {
+        var selectedRequestCategory = requestCategoryRepository.getRequestCategoryById(timeOffRequest.requestCategoryId());
+        if (selectedRequestCategory == null) {
+            throw new TimeOffRequestException(String.format("Failed to find request category with id %s",
+                            timeOffRequest.requestCategoryId()));
+        }
+        try {
+            employeeRepository.getEmployee(timeOffRequest.employeeId());
+        } catch (EmployeeNotFoundException e) {
+            throw new TimeOffRequestException(e.getMessage());
+        }
         List<TimeOffRequest> existingRequests =
                 timeOffRequestRepository.getTimeOffRequestsByEmployeeId(timeOffRequest.employeeId());
         for (TimeOffRequest existingRequest : existingRequests) {
